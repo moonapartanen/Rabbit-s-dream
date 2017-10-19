@@ -5,26 +5,28 @@ using UnityEngine;
 
 public class DestroyerScript : MonoBehaviour {
 
-    //Destroyerin omat muuttujat
+    //Variables for the destroyer, Rigidbody2D and speed it moves
     private Rigidbody2D rb2d;
-    private float speed = 1f;
+    private float speed = 1.2f;
 
-    //taulukko generaattoreille (GroundSpawn-Objektit) ja spawnereille (Sisältävät niiden luomat tasot.)
+    //Array for the spawners (GroundSpawn-Objects) and Lists for different spawners which get the references to each spawners own list (These include the spawned objects)
     public GameObject[] generators;
     private List<GameObject> firstSpawner;
     private List<GameObject> secondSpawner;
     private List<GameObject> thirdSpawner;
 
-    //Voi käyttää pysäyttämään destroyerin jos peli esim. laitetaan pauselle
+    //Can be used to stop the destroyer while game is paused, for example
     [SerializeField] private bool m_StopScrolling;
 
     void Start()
     {
-        //Haetaan kaikki objektit jotka sisältävät tagin "PlatformGenerator" (GroundSpawn), joilla alustamme generators taulukon
+        //Get all objects that have the Tag "PlatformGenerator" (GroundSpawn)
         generators = GameObject.FindGameObjectsWithTag("PlatformGenerator");
+
+        //Get the body of the destroyer and set the speed it moves (vertically)
         rb2d = GetComponent<Rigidbody2D>();
         rb2d.velocity = new Vector2(0f, speed);
-        //Otetaan alussa jokaisen spawnerin omat listat kiinni muuttujiin, joita käytämme tuhoamaan listasta objekteja. Jokaisella Groundspawnilla on oma ID, jota vertailemme.
+        //Get the references to the Lists, each spawner has its own ID, Compare to find the right ones
         foreach(GameObject spwn in generators)
         {
             if(spwn.GetComponent<SpawnPlatforms>().spawnerID == 1)
@@ -52,21 +54,17 @@ public class DestroyerScript : MonoBehaviour {
         }
     }
 
-    private void LateUpdate()
-    {
-        
-    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == "Player")
         {
-            //Gameover, pausettaa pelin kun pelaaja osuu Destroyeriin
+            //If collision with the player, pause the game for now before proper end game screen has been made
             Debug.Break();
         }
-        //Vertaillaan mikä Groundspawneri kyseessä, tasoille on annettu nimeksi "Spawner " + spawnerID + " Platform Number: " + spawnCounter" 
-        //missä spawnerID on tason luojan ID ja spawnCounter merkkaa numeroa, joka vastaa tason luontinumeroa.
-        //Poistetaan gameobjecti listasta ja tuhotaan se pelistä. 
-        //Tämän jälkeen SpawnPlatforms jatkaa tasojen luontia harmaaseen tulevaisuuteen asti, kun listasta vapautuu tilaa (n < 10).
+        //Compare with spawners object was hit, platforms that have been spawned have name in this format: "Spawner " + spawnerID(int) + " Platform Number: " + spawnCounter(int)" 
+        //For further reference if needed
+        //Delete object from the spawner list and destroy gameobject from game. 
+        //If after deletion list has room (n < MAX_PLATFORMS), spawners will continue to a new cycle
         if (collision.name.Contains("Spawner 1"))
         {
             firstSpawner.Remove(collision.gameObject);
@@ -84,7 +82,7 @@ public class DestroyerScript : MonoBehaviour {
         }
         else
         {
-            //Destroyeri tuhoaa kaiken muun, mikä osuu siihen. Eli kaikki missä ei ole käytetty GroundSpawneria (Pelaaja, Eka platform, you name it.)
+            //Destroy anything else it hits (In the future it will be enemies.
             Destroy(collision.gameObject);
         }
     }

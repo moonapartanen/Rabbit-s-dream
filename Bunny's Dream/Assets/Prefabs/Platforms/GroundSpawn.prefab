@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114365865843534120}
   m_Layer: 0
   m_Name: GroundSpawn
-  m_TagString: Untagged
+  m_TagString: PlatformGenerator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1283193521055308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.77, y: -0.44, z: 0}
+  m_LocalPosition: {x: -1.26, y: 2.56, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -49,7 +49,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1283193521055308}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_MotionVectors: 1
@@ -108,8 +108,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj:
-  - {fileID: 1557698862733610, guid: 32614ebc89d8f2542a55aa45e70d73f8, type: 2}
-  - {fileID: 1064378959013552, guid: 2e0c8c9b1ccf7e64c84dcf8b85d812ac, type: 2}
   - {fileID: 1459266650418714, guid: 7ce60d4246f07674ba9352f672775b40, type: 2}
-  spawnMin: 1
-  spawnMax: 2
+  - {fileID: 1064378959013552, guid: 2e0c8c9b1ccf7e64c84dcf8b85d812ac, type: 2}
+  - {fileID: 0}
+  spawnerID: 0
+  spawned: []
