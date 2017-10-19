@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+//Destroyer
 public class DestroyerScript : MonoBehaviour {
 
     //Variables for the destroyer, Rigidbody2D and speed it moves
