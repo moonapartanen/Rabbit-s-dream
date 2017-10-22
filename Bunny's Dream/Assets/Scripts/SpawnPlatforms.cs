@@ -21,6 +21,9 @@ using UnityEngine;
  * - Moving platforms after certain point (Randomized which of the platforms is moving, this can be vertical or horizontal depending on the specific spawn configuration)
  * - Enemies on top of the platforms (Random)
  * 
+ * Known bug:
+ * -Spawner 2 lags behind other spawners in the scene, as in spawner 3 and 1 actually spawn 3rd platform before spawner 2 spawns 2nd platform.
+ * -All platforms are nevertheless spawned in correct location (Hmm?)
  * Made by Eetu Leivo
      */
 
@@ -30,6 +33,9 @@ public class SpawnPlatforms : MonoBehaviour {
      * Difficulty will be based on the speed of the camera (Changing after enough spawns have passed / certain height is reached), moving platforms and enemies. 
      */
     public Dictionary<int, Platforms> platformLocations;
+    //List for checking if the spawner has spawned in a cycle or not, when this gets to Count 3, it gets remade and cycle continues, so we can safely update highest-variable 
+    //safely to get the proper value and change the randomPlatformNumber for the next cycle
+    public static List<int> spawnersInCycle;
     // This is the variable to hold the highest value for each cycle
     private static float highest = -0.1f;
     //Array for prefabs that hold the grounds that get spawned (LARGE, MEDIUM, SMALL)
@@ -41,6 +47,7 @@ public class SpawnPlatforms : MonoBehaviour {
     private Vector2 platformLocation;
 
     private static int randomPlatformNumber;
+    private static int spawnsInCycle = -1;
     //max number of platforms alive for each spawner
     private int MAX_PLATFORMS = 20;
     //speed variable for spawning platforms
@@ -58,7 +65,7 @@ public class SpawnPlatforms : MonoBehaviour {
         platformLocations = getPremadePlatforms();
         spawnCounter = 0;
         platformLocation = transform.position;
-        
+        spawnersInCycle = new List<int>();
         if(this.name == "GroundSpawn 1")
         {
             this.spawnerID = 1;
@@ -81,22 +88,30 @@ public class SpawnPlatforms : MonoBehaviour {
     private void LateUpdate()
     {
         //Get the highest platform in previous cycle
-        highest = highestPlatform();
-
-        //Get new random value
-        randomPlatformNumber = GameObject.Find("GroundSpawn 1").GetComponent<SpawnPlatforms>().randomNumber();
+        if(spawnersInCycle.Count == 3)
+        {
+            spawnersInCycle = new List<int>();
+            highest = highestPlatform();
+            randomPlatformNumber = GameObject.Find("GroundSpawn 1").GetComponent<SpawnPlatforms>().randomNumber();
+        }
     }
+
     void Spawn()
     {
         //Only spawn if (n < MAX_PLATFORMS)
          
         if (spawned.Count < MAX_PLATFORMS)
         {
-            GameObject newPlatform = Instantiate(obj[Random.Range(0, obj.Length)], platformLocation, Quaternion.identity);
-            newPlatform.name = "Spawner " + spawnerID + " Platform Number: " + spawnCounter;
-            spawned.Add(newPlatform);
-            spawnCounter++;
-            transform.position = PlatformCoords();
+            //Only spawn if the spawners ID cannot be found in the list, this list gets remade in lateUpdate every cycle when the Count gets to 3 (All spawners are inside the list)
+            if (!spawnersInCycle.Contains(this.spawnerID))
+            {
+                spawnersInCycle.Add(this.spawnerID);
+                GameObject newPlatform = Instantiate(obj[Random.Range(0, obj.Length)], platformLocation, Quaternion.identity);
+                newPlatform.name = "Spawner " + spawnerID + " Platform Number: " + spawnCounter;
+                spawned.Add(newPlatform);
+                spawnCounter++;
+                transform.position = PlatformCoords();
+            } 
         }
         Invoke("Spawn", m_spawnTime);
     }
@@ -131,21 +146,18 @@ public class SpawnPlatforms : MonoBehaviour {
         Vector2 location = new Vector2();
         if (this.spawnerID == 1)
          {
-            Debug.Log(highest);
             location.x = transform.position.x;
             location.y = highest + platformLocations[randomPlatformNumber].platformOneY;
             Debug.Log("Spawner 1: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
          }
          else if (this.spawnerID == 2)
          {
-             Debug.Log(highest);
              location.x = transform.position.x;
              location.y = highest + platformLocations[randomPlatformNumber].platformTwoY;
              Debug.Log("Spawner 2: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
          }
          else if (this.spawnerID == 3)
          {
-             Debug.Log(highest);
              location.x = transform.position.x;
              location.y = highest + platformLocations[randomPlatformNumber].platformThreeY;
              Debug.Log("Spawner 3: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
