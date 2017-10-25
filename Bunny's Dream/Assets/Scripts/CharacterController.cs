@@ -67,7 +67,7 @@ public class CharacterController : MonoBehaviour {
         }
     }
 
-    //Flip the hero when you move to the other direction (horizontal)
+    //Hahmo käännetään toiseen suuntaan aina käännyttäessä
     void Flip()
     {
         facingRight = !facingRight;

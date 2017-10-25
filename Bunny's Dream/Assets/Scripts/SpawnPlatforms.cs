@@ -25,7 +25,8 @@ using UnityEngine;
  * Made by Eetu Leivo
      */
 
-public class SpawnPlatforms : MonoBehaviour {
+public class SpawnPlatforms : MonoBehaviour
+{
 
     /* Holds premade platform configurations set inside Platforms class that get used to randomize the spawned platforms. This is to ensure that there is always a platform that you can jump on
      * Difficulty will be based on the speed of the camera (Changing after enough spawns have passed / certain height is reached), moving platforms and enemies. 
@@ -40,7 +41,7 @@ public class SpawnPlatforms : MonoBehaviour {
     public GameObject[] obj;
     //ID for the spawner, needs to be public so we can access the value inside DestroyerScript.
     public int spawnerID;
-    
+
     //location for the spawner
     private Vector2 platformLocation;
 
@@ -58,23 +59,26 @@ public class SpawnPlatforms : MonoBehaviour {
     private int spawnCounter;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         randomPlatformNumber = 0;
         platformLocations = getPremadePlatforms();
         spawnCounter = 0;
         platformLocation = transform.position;
-        if(this.name == "GroundSpawn 1")
+        if (this.name == "GroundSpawn 1")
         {
             this.spawnerID = 1;
-        } else if(this.name == "GroundSpawn 2")
+        }
+        else if (this.name == "GroundSpawn 2")
         {
             this.spawnerID = 2;
-        } else
+        }
+        else
         {
             this.spawnerID = 3;
         }
         Spawn();
-	}
+    }
 
     private void Update()
     {
@@ -85,7 +89,7 @@ public class SpawnPlatforms : MonoBehaviour {
     private void LateUpdate()
     {
         //Get the highest platform in previous cycle
-        if(spawnersInCycle.Count == 3)
+        if (spawnersInCycle.Count == 3)
         {
             spawnersInCycle = new List<int>();
             highest = highestPlatform();
@@ -96,7 +100,7 @@ public class SpawnPlatforms : MonoBehaviour {
     void Spawn()
     {
         //Only spawn if (n < MAX_PLATFORMS)
-         
+
         if (spawned.Count < MAX_PLATFORMS)
         {
             //Only spawn if the spawners ID cannot be found in the list, this list gets remade in lateUpdate every cycle when the Count gets to 3 (All spawners are inside the list)
@@ -108,7 +112,7 @@ public class SpawnPlatforms : MonoBehaviour {
                 spawned.Add(newPlatform);
                 spawnCounter++;
                 transform.position = PlatformCoords();
-            } 
+            }
         }
         Invoke("Spawn", m_spawnTime);
     }
@@ -119,16 +123,19 @@ public class SpawnPlatforms : MonoBehaviour {
     private float highestPlatform()
     {
         GameObject spawnerLocation;
-        if(platformLocations[randomPlatformNumber].getHighest() == 1)
+        if (platformLocations[randomPlatformNumber].getHighest() == 1)
         {
             spawnerLocation = GameObject.Find("GroundSpawn 1").gameObject;
-        } else if (platformLocations[randomPlatformNumber].getHighest() == 2)
+        }
+        else if (platformLocations[randomPlatformNumber].getHighest() == 2)
         {
             spawnerLocation = GameObject.Find("GroundSpawn 2").gameObject;
-        } else if (platformLocations[randomPlatformNumber].getHighest() == 3)
+        }
+        else if (platformLocations[randomPlatformNumber].getHighest() == 3)
         {
             spawnerLocation = GameObject.Find("GroundSpawn 3").gameObject;
-        } else
+        }
+        else
         {
             //Since all spawns are on the same level, it doesn't matter which spawner we use to get the highest y-value.
             spawnerLocation = GameObject.Find("GroundSpawn 1").gameObject;
@@ -136,32 +143,32 @@ public class SpawnPlatforms : MonoBehaviour {
 
         return spawnerLocation.gameObject.transform.position.y;
     }
- 
+
     //This function returns location for each spawner, location.x does not change, location.y is the HIGHEST of previous cycle + the float we get from the dictionary (platformLocations) for each spawner
     Vector2 PlatformCoords()
     {
         Vector2 location = new Vector2();
         if (this.spawnerID == 1)
-         {
+        {
             location.x = transform.position.x;
             location.y = highest + platformLocations[randomPlatformNumber].platformOneY;
             Debug.Log("Spawner 1: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
-         }
-         else if (this.spawnerID == 2)
-         {
-             location.x = transform.position.x;
-             location.y = highest + platformLocations[randomPlatformNumber].platformTwoY;
-             Debug.Log("Spawner 2: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
-         }
-         else if (this.spawnerID == 3)
-         {
-             location.x = transform.position.x;
-             location.y = highest + platformLocations[randomPlatformNumber].platformThreeY;
-             Debug.Log("Spawner 3: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
-         }
+        }
+        else if (this.spawnerID == 2)
+        {
+            location.x = transform.position.x;
+            location.y = highest + platformLocations[randomPlatformNumber].platformTwoY;
+            Debug.Log("Spawner 2: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
+        }
+        else if (this.spawnerID == 3)
+        {
+            location.x = transform.position.x;
+            location.y = highest + platformLocations[randomPlatformNumber].platformThreeY;
+            Debug.Log("Spawner 3: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
+        }
         return location;
     }
-    
+
     // This function randoms as long as needed to find another value that was previously in randomPlatformNumber so we get different platform setups each cycle
     int randomNumber()
     {
@@ -203,13 +210,15 @@ public class SpawnPlatforms : MonoBehaviour {
         public int getHighest()
         {
             int highest = 0;
-            if(platformOneY > platformTwoY && platformOneY > platformThreeY)
+            if (platformOneY > platformTwoY && platformOneY > platformThreeY)
             {
                 highest = 1;
-            } else if(platformTwoY > platformOneY && platformTwoY > platformThreeY)
+            }
+            else if (platformTwoY > platformOneY && platformTwoY > platformThreeY)
             {
                 highest = 2;
-            } else if(platformThreeY > platformTwoY && platformThreeY > platformOneY)
+            }
+            else if (platformThreeY > platformTwoY && platformThreeY > platformOneY)
             {
                 highest = 3;
             }
