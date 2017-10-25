@@ -5,10 +5,11 @@ using UnityEngine;
 public class CameraScroller : MonoBehaviour {
 
     private Rigidbody2D rb2d;
-    private float speed = 2f;
+    public float speed;
     [SerializeField] private bool m_StopScrolling;
 
 	void Start () {
+        speed = 2f;
         rb2d = GetComponent<Rigidbody2D>();
         rb2d.velocity = new Vector2(0f, speed);
 	}

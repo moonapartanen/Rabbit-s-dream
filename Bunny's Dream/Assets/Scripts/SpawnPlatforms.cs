@@ -42,6 +42,8 @@ public class SpawnPlatforms : MonoBehaviour
     //ID for the spawner, needs to be public so we can access the value inside DestroyerScript.
     public int spawnerID;
 
+    public static bool spawnCarrot = false;
+    public static int carrotSpawnerId = 0;
     //location for the spawner
     private Vector2 platformLocation;
 
@@ -56,14 +58,14 @@ public class SpawnPlatforms : MonoBehaviour
     public List<GameObject> spawned;
 
     //Counter for spawner
-    private int spawnCounter;
+    private static int spawnCounter = 1;
 
     // Use this for initialization
     void Start()
     {
         randomPlatformNumber = 0;
         platformLocations = getPremadePlatforms();
-        spawnCounter = 0;
+        //spawnCounter = 0;
         platformLocation = transform.position;
         if (this.name == "GroundSpawn 1")
         {
@@ -91,6 +93,20 @@ public class SpawnPlatforms : MonoBehaviour
         //Get the highest platform in previous cycle
         if (spawnersInCycle.Count == 3)
         {
+            spawnCounter++;
+
+            if (spawnCounter % 3 == 0 && !spawnCarrot)
+            {
+                spawnCarrot = true;
+                carrotSpawnerId = Random.Range(1, 3);
+            }
+
+            if (spawnCounter % 7 == 0)
+            {
+                GameObject.Find("Main Camera").GetComponent<CameraScroller>().speed += 0.5f;
+                GameObject.Find("Destroyer").GetComponent<DestroyerScript>().speed += 0.5f;
+            }
+
             spawnersInCycle = new List<int>();
             highest = highestPlatform();
             randomPlatformNumber = GameObject.Find("GroundSpawn 1").GetComponent<SpawnPlatforms>().randomNumber();
@@ -100,7 +116,6 @@ public class SpawnPlatforms : MonoBehaviour
     void Spawn()
     {
         //Only spawn if (n < MAX_PLATFORMS)
-
         if (spawned.Count < MAX_PLATFORMS)
         {
             //Only spawn if the spawners ID cannot be found in the list, this list gets remade in lateUpdate every cycle when the Count gets to 3 (All spawners are inside the list)
@@ -109,8 +124,16 @@ public class SpawnPlatforms : MonoBehaviour
                 spawnersInCycle.Add(this.spawnerID);
                 GameObject newPlatform = Instantiate(obj[Random.Range(0, obj.Length)], platformLocation, Quaternion.identity);
                 newPlatform.name = "Spawner " + spawnerID + " Platform Number: " + spawnCounter;
+
+                if (spawnCarrot && this.spawnerID == carrotSpawnerId)
+                {
+                    GameObject carrot = (GameObject)Instantiate(Resources.Load("Carrot"), new Vector2(platformLocation.x, platformLocation.y + 1f), Quaternion.identity); //(carrot, new Vector2(platformLocation.x, platformLocation.y + 1f), Quaternion.identity);
+                    spawnCarrot = false;
+                }
+
+                
                 spawned.Add(newPlatform);
-                spawnCounter++;
+                
                 transform.position = PlatformCoords();
             }
         }

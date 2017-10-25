@@ -7,7 +7,7 @@ public class DestroyerScript : MonoBehaviour {
 
     //Destroyerin omat muuttujat
     private Rigidbody2D rb2d;
-    private float speed = 1f;
+    public float speed = 1f;
 
     //taulukko generaattoreille (GroundSpawn-Objektit) ja spawnereille (Sisältävät niiden luomat tasot.)
     public GameObject[] generators;
