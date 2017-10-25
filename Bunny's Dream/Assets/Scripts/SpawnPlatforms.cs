@@ -21,9 +21,7 @@ using UnityEngine;
  * - Moving platforms after certain point (Randomized which of the platforms is moving, this can be vertical or horizontal depending on the specific spawn configuration)
  * - Enemies on top of the platforms (Random)
  * 
- * Known bug:
- * -Spawner 2 lags behind other spawners in the scene, as in spawner 3 and 1 actually spawn 3rd platform before spawner 2 spawns 2nd platform.
- * -All platforms are nevertheless spawned in correct location (Hmm?)
+ * 
  * Made by Eetu Leivo
      */
 
@@ -35,7 +33,7 @@ public class SpawnPlatforms : MonoBehaviour {
     public Dictionary<int, Platforms> platformLocations;
     //List for checking if the spawner has spawned in a cycle or not, when this gets to Count 3, it gets remade and cycle continues, so we can safely update highest-variable 
     //safely to get the proper value and change the randomPlatformNumber for the next cycle
-    public static List<int> spawnersInCycle;
+    public static List<int> spawnersInCycle = new List<int>();
     // This is the variable to hold the highest value for each cycle
     private static float highest = -0.1f;
     //Array for prefabs that hold the grounds that get spawned (LARGE, MEDIUM, SMALL)
@@ -65,7 +63,6 @@ public class SpawnPlatforms : MonoBehaviour {
         platformLocations = getPremadePlatforms();
         spawnCounter = 0;
         platformLocation = transform.position;
-        spawnersInCycle = new List<int>();
         if(this.name == "GroundSpawn 1")
         {
             this.spawnerID = 1;
