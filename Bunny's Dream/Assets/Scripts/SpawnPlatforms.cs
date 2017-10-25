@@ -31,8 +31,8 @@ public class SpawnPlatforms : MonoBehaviour {
      * Difficulty will be based on the speed of the camera (Changing after enough spawns have passed / certain height is reached), moving platforms and enemies. 
      */
     public Dictionary<int, Platforms> platformLocations;
-    //List for checking if the spawner has spawned in a cycle or not, when this gets to Count 3, it gets remade and cycle continues, so we can safely update highest-variable 
-    //safely to get the proper value and change the randomPlatformNumber for the next cycle
+    //List for checking if the spawner has spawned in a cycle or not, when this gets to Count 3, 
+    //it gets remade and cycle continues, so we can safely update highest-variable 
     public static List<int> spawnersInCycle = new List<int>();
     // This is the variable to hold the highest value for each cycle
     private static float highest = -0.1f;
