@@ -53,7 +53,12 @@ public class SpawnPlatforms : MonoBehaviour
     private int MAX_PLATFORMS = 20;
     //speed variable for spawning platforms
     private float m_spawnTime = 2f;
-
+    //Variable for CameraScroller-script
+    public static CameraScroller cameraSpeed;
+    //Variable for DestroyerScript-script
+    public static DestroyerScript destroyerScript;
+    public float cameraDestroyerSpeedIncrease;
+    public static bool speedAlreadyIncreased = false;
     //List that holds all the objects, that get spawned so we can access them later to destroy them or get values (count etc).
     public List<GameObject> spawned;
 
@@ -63,9 +68,23 @@ public class SpawnPlatforms : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        //If not set, get the script from the Main Camera GameObject
+        if(!cameraSpeed)
+            cameraSpeed = GameObject.Find("Main Camera").GetComponent<CameraScroller>();
+
+        //If not set, get the DestroyerScript from the Destroyer GameObject
+        if (destroyerScript == null)
+        {
+            GameObject destroyer = GameObject.Find("Destroyer");
+            destroyerScript = (DestroyerScript)destroyer.GetComponent(typeof(DestroyerScript));
+        }
+
+        //If not set, variable starts at 0, increase it by marginal value like 0.2f (Starting value)
+        if(cameraDestroyerSpeedIncrease == 0)
+            cameraDestroyerSpeedIncrease += 0.2f;
+
         randomPlatformNumber = 0;
         platformLocations = getPremadePlatforms();
-        //spawnCounter = 0;
         platformLocation = transform.position;
         if (this.name == "GroundSpawn 1")
         {
@@ -90,7 +109,7 @@ public class SpawnPlatforms : MonoBehaviour
 
     private void LateUpdate()
     {
-        //Get the highest platform in previous cycle
+        //Get the highest platform in previous cycle, check if we need to spawn carrots (Boosts, no functionality yet), Randomize which platform has the carrot. Increase speed for camera & Destroyer
         if (spawnersInCycle.Count == 3)
         {
             spawnCounter++;
@@ -101,16 +120,30 @@ public class SpawnPlatforms : MonoBehaviour
                 carrotSpawnerId = Random.Range(1, 3);
             }
 
-            if (spawnCounter % 7 == 0)
-            {
-                GameObject.Find("Main Camera").GetComponent<CameraScroller>().speed += 0.5f;
-                GameObject.Find("Destroyer").GetComponent<DestroyerScript>().speed += 0.5f;
-            }
-
             spawnersInCycle = new List<int>();
             highest = highestPlatform();
             randomPlatformNumber = GameObject.Find("GroundSpawn 1").GetComponent<SpawnPlatforms>().randomNumber();
         }
+
+        if (spawnCounter % 5 == 0)
+        {
+            //Only spawner 1 increases the speed, otherwise there would be 3 increases per cycle
+            if(spawnerID == 1)
+            {
+
+                if (!speedAlreadyIncreased)
+                {
+                    cameraSpeed.IncreaseSpeedForCamera(cameraDestroyerSpeedIncrease);
+                    destroyerScript.IncreaseSpeedForDestroyer(cameraDestroyerSpeedIncrease);
+                    boolIncreasedCameraSpeed();
+                }
+            }
+        }
+    }
+
+    void boolIncreasedCameraSpeed()
+    {
+        speedAlreadyIncreased = !speedAlreadyIncreased;
     }
 
     void Spawn()
@@ -131,6 +164,7 @@ public class SpawnPlatforms : MonoBehaviour
                     spawnCarrot = false;
                 }
 
+                speedAlreadyIncreased = (speedAlreadyIncreased) ? false : true;
                 
                 spawned.Add(newPlatform);
                 

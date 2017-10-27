@@ -78,6 +78,7 @@ public class CharacterController : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Destroy(collision.gameObject);
+        if(!collision.name.Equals("Destroyer"))
+            Destroy(collision.gameObject);
     }
 }

@@ -52,10 +52,11 @@ public class DestroyerScript : MonoBehaviour {
         }
     }
 
-    private void LateUpdate()
+    public void IncreaseSpeedForDestroyer(float increase)
     {
-        
+        speed += increase;
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == "Player")

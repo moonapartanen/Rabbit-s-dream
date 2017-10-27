@@ -25,4 +25,9 @@ public class CameraScroller : MonoBehaviour {
             rb2d.velocity = new Vector2(0f, speed);
         }
 	}
+
+    public void IncreaseSpeedForCamera(float increase)
+    {
+        speed += increase;
+    }
 }
