@@ -64,7 +64,7 @@ public class SpawnPlatforms : MonoBehaviour
 
     //Counter for spawner
     private static int spawnCounter = 1;
-
+    private static int enemyCounter = 0;
     // Use this for initialization
     void Start()
     {
@@ -109,7 +109,6 @@ public class SpawnPlatforms : MonoBehaviour
 
     private void LateUpdate()
     {
-        Debug.Log(speedAlreadyIncreased);
         //Get the highest platform in previous cycle, check if we need to spawn carrots (Boosts, no functionality yet), Randomize which platform has the carrot. Increase speed for camera & Destroyer
         if (spawnersInCycle.Count == 3)
         {
@@ -161,8 +160,17 @@ public class SpawnPlatforms : MonoBehaviour
 
                 if (spawnCarrot && this.spawnerID == carrotSpawnerId)
                 {
-                    GameObject carrot = (GameObject)Instantiate(Resources.Load("Carrot"), new Vector2(platformLocation.x, platformLocation.y + 1f), Quaternion.identity); //(carrot, new Vector2(platformLocation.x, platformLocation.y + 1f), Quaternion.identity);
+                    GameObject carrot = (GameObject)Instantiate(Resources.Load("Carrot"), new Vector2(platformLocation.x, platformLocation.y + 1f), Quaternion.identity);
+                    carrot.transform.parent = newPlatform.transform;
                     spawnCarrot = false;
+                }
+
+                if(spawnCounter % 4 == 0)
+                {
+                    GameObject enemy = (GameObject)Instantiate(Resources.Load("Enemy"), new Vector2(platformLocation.x, platformLocation.y + 3f), Quaternion.identity);
+                    enemyCounter++;
+                    enemy.name = "Enemy: " + enemyCounter;
+                    enemy.transform.parent = newPlatform.transform;
                 }
                 spawned.Add(newPlatform);
                 
@@ -207,19 +215,16 @@ public class SpawnPlatforms : MonoBehaviour
         {
             location.x = transform.position.x;
             location.y = highest + platformLocations[randomPlatformNumber].platformOneY;
-            Debug.Log("Spawner 1: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
         }
         else if (this.spawnerID == 2)
         {
             location.x = transform.position.x;
             location.y = highest + platformLocations[randomPlatformNumber].platformTwoY;
-            Debug.Log("Spawner 2: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
         }
         else if (this.spawnerID == 3)
         {
             location.x = transform.position.x;
             location.y = highest + platformLocations[randomPlatformNumber].platformThreeY;
-            Debug.Log("Spawner 3: " + randomPlatformNumber + " / " + highest + " / " + transform.position.y);
         }
         return location;
     }

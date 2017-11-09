@@ -2,23 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour {
+[RequireComponent (typeof(CarrotBoosters))]
+public class CharacterControl : MonoBehaviour {
 
     [HideInInspector] public bool facingRight = true;
     [HideInInspector] public bool jump = true;
-
+    public List<CarrotBoosters.Booster> boosters;
+    public int keyForBooster;
+    public bool boostActive;
+    public string activeBoostName;
     public float moveForce = 365f;
     public float maxSpeed = 5f;
     public float jumpForce = 1000f;
     public Transform groundCheck;
 
+    private EnemyScript enemyScript;
     private bool grounded = false;
+    public bool enemyBelow;
     private Animator anim;
     private Rigidbody2D rb2d;
     // Use this for initialization
 
     private void Awake()
     {
+        boosters = CarrotBoosters.getBoosters();
+        boostActive = false;
+        enemyBelow = false;
         anim = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>();
     }
@@ -54,17 +63,33 @@ public class CharacterController : MonoBehaviour {
             rb2d.AddForce(new Vector2(0f, jumpForce));
             jump = false;
         }
+
+        if (activeBoostName == "VerticalBoost" && !boostActive)
+        {
+            boostStatus();
+            if (boostActive)
+            {
+                rb2d.AddForce(new Vector2(0f, 1200f));
+                activeBoostName = "";
+                boostStatus();
+            }
+        }
+    }
+
+    public void boostStatus()
+    {
+        boostActive = !boostActive;
     }
 
     // Update is called once per frame
     void Update()
     {
         grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
-
         if (Input.GetButtonDown("Jump") && grounded)
         {
             jump = true;
         }
+        Debug.Log(enemyBelow);
     }
 
     //Hahmo käännetään toiseen suuntaan aina käännyttäessä
@@ -78,7 +103,20 @@ public class CharacterController : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(!collision.name.Equals("Destroyer"))
+        Debug.Log(collision.gameObject);
+        if(collision.name.Contains("Carrot"))
+        {
+            keyForBooster = Random.Range(0, boosters.Count - 1);
+            boosters[keyForBooster].setBoostActive();
+            activeBoostName = boosters[keyForBooster].getName();
             Destroy(collision.gameObject);
+        }
+
+        if (collision.name.Contains("Enemy") && !collision.gameObject.Equals("groundCollider"))
+        {
+            Debug.Log(collision.name);
+            enemyScript = collision.gameObject.GetComponent<EnemyScript>();
+            enemyScript.EnemyDead(collision.gameObject);
+        }
     }
 }
