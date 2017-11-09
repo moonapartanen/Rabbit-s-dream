@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 50886528987503006}
   - component: {fileID: 212625894700422828}
   - component: {fileID: 61944376942842258}
-  - component: {fileID: 68303887927230276}
+  - component: {fileID: 68418312194561222}
   m_Layer: 10
   m_Name: Enemy
   m_TagString: Untagged
@@ -119,7 +119,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 10, y: 4}
   m_EdgeRadius: 0
---- !u!68 &68303887927230276
+--- !u!68 &68418312194561222
 EdgeCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -134,8 +134,8 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -4, y: -6}
-  - {x: 9, y: -6}
+  - {x: -3.565, y: -4}
+  - {x: 9, y: -4}
 --- !u!114 &114864605587919320
 MonoBehaviour:
   m_ObjectHideFlags: 1
