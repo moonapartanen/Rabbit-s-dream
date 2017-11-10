@@ -86,7 +86,9 @@ public class DestroyerScript : MonoBehaviour {
         else
         {
             //Destroyeri tuhoaa kaiken muun, mikä osuu siihen. Eli kaikki missä ei ole käytetty GroundSpawneria (Pelaaja, Eka platform, you name it.)
+            Debug.Log(collision.gameObject.name);
             Destroy(collision.gameObject);
+            
         }
     }
 }

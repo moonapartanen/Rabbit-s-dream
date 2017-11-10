@@ -16,9 +16,9 @@ public class EnemyScript : MonoBehaviour {
         mPlatformCollider = this.transform.parent.GetComponent<BoxCollider2D>();
         endPoint = mPlatformCollider.bounds.max;
         startPoint = mPlatformCollider.bounds.min;
-        endPoint.y += 1.3f;
         //Raising the startPoint to the same level as endPoint
-        startPoint.y += 2f;
+        startPoint.y = endPoint.y = this.transform.parent.position.y + 2f;
+
         currentLerpTime = Time.deltaTime;
         while(true)
         {

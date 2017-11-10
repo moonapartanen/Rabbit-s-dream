@@ -9,7 +9,7 @@ public class CharacterControl : MonoBehaviour {
     [HideInInspector] public bool jump = true;
     public List<CarrotBoosters.Booster> boosters;
     public int keyForBooster;
-    public bool boostActive;
+    public bool boostActivated, boostDone;
     public string activeBoostName;
     private float moveForce = 365f;
     private float maxSpeed = 5f;
@@ -36,7 +36,7 @@ public class CharacterControl : MonoBehaviour {
         }
 
         boosters = CarrotBoosters.getBoosters();
-        boostActive = false;
+        boostActivated = false;
         enemyBelow = false;
         anim = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>();
@@ -74,21 +74,15 @@ public class CharacterControl : MonoBehaviour {
             jump = false;
         }
 
-        if (boostActive)
+        if (boostActivated)
         {
-            if(!carrotBoostersScript.boostDone())
-            {
-                carrotBoostersScript.CheckBoostName(activeBoostName);
-            } else
-            {
-                boostActive = false;
-            }
+            carrotBoostersScript.CheckBoostName(boosters[keyForBooster]);
         }
     }
 
     public void boostStatus()
     {
-        boostActive = !boostActive;
+        boostActivated = !boostActivated;
     }
 
     // Update is called once per frame
@@ -99,7 +93,6 @@ public class CharacterControl : MonoBehaviour {
         {
             jump = true;
         }
-        Debug.Log(enemyBelow);
     }
 
     //Hahmo käännetään toiseen suuntaan aina käännyttäessä
@@ -133,7 +126,7 @@ public class CharacterControl : MonoBehaviour {
             {
                 KillEnemy(collision);
             }
-            else if (collision.gameObject.name.Equals("ketunroppa") && !boostActive && activeBoostName != "Shield")
+            else if (collision.gameObject.name.Equals("ketunroppa") && activeBoostName != "Shield")
             {
                 Debug.Log("You are DEADDDDDD!!!!!1!!!1111 EATEN BY A FOX!");
                 Debug.Break();
