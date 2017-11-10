@@ -11,11 +11,11 @@ public class CharacterControl : MonoBehaviour {
     public int keyForBooster;
     public bool boostActive;
     public string activeBoostName;
-    public float moveForce = 365f;
-    public float maxSpeed = 5f;
-    public float jumpForce = 1000f;
-    public Transform groundCheck;
-
+    private float moveForce = 365f;
+    private float maxSpeed = 5f;
+    private float jumpForce = 1000f;
+    private Transform groundCheck;
+    public CarrotBoosters carrotBoostersScript;
     private EnemyScript enemyScript;
     private bool grounded = false;
     public bool enemyBelow;
@@ -25,6 +25,16 @@ public class CharacterControl : MonoBehaviour {
 
     private void Awake()
     {
+        if (!carrotBoostersScript) {
+            carrotBoostersScript = (CarrotBoosters)transform.GetComponent(typeof(CarrotBoosters));
+        }
+        
+        if(!groundCheck)
+        {
+            GameObject groundC = GameObject.Find("groundCheck");
+            groundCheck = (Transform)groundC.transform;
+        }
+
         boosters = CarrotBoosters.getBoosters();
         boostActive = false;
         enemyBelow = false;
@@ -64,14 +74,14 @@ public class CharacterControl : MonoBehaviour {
             jump = false;
         }
 
-        if (activeBoostName == "VerticalBoost" && !boostActive)
+        if (boostActive)
         {
-            boostStatus();
-            if (boostActive)
+            if(!carrotBoostersScript.boostDone())
             {
-                rb2d.AddForce(new Vector2(0f, 1200f));
-                activeBoostName = "";
-                boostStatus();
+                carrotBoostersScript.CheckBoostName(activeBoostName);
+            } else
+            {
+                boostActive = false;
             }
         }
     }
@@ -101,22 +111,37 @@ public class CharacterControl : MonoBehaviour {
         transform.localScale = theScale;
     }
 
+    public void KillEnemy(Collider2D collision)
+    {
+        enemyScript = collision.gameObject.GetComponent<EnemyScript>();
+        enemyScript.EnemyDead(collision.gameObject);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log(collision.gameObject);
         if(collision.name.Contains("Carrot"))
         {
+            boostStatus();
             keyForBooster = Random.Range(0, boosters.Count - 1);
             boosters[keyForBooster].setBoostActive();
             activeBoostName = boosters[keyForBooster].getName();
             Destroy(collision.gameObject);
-        }
-
-        if (collision.name.Contains("Enemy") && !collision.gameObject.Equals("groundCollider"))
+        } else
         {
-            Debug.Log(collision.name);
-            enemyScript = collision.gameObject.GetComponent<EnemyScript>();
-            enemyScript.EnemyDead(collision.gameObject);
+            if (collision.gameObject.name.Contains("Enemy"))
+            {
+                KillEnemy(collision);
+            }
+            else if (collision.gameObject.name.Equals("ketunroppa") && !boostActive && activeBoostName != "Shield")
+            {
+                Debug.Log("You are DEADDDDDD!!!!!1!!!1111 EATEN BY A FOX!");
+                Debug.Break();
+            }
+            else
+            {
+                KillEnemy(collision);
+            }
         }
     }
 }

@@ -10,7 +10,6 @@ public class EnemyScript : MonoBehaviour {
     public bool EnemyAlive = true, facingRight = false;
     private float duration = 4f;
     private float currentLerpTime, startTime, rateToBeChecked;
-    private bool needToTurnAround = false;
 	// Use this for initialization
 	IEnumerator Start () {
         //Get the collider in the cloud and get the bounds

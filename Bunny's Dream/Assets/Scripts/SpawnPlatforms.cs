@@ -53,11 +53,9 @@ public class SpawnPlatforms : MonoBehaviour
     private int MAX_PLATFORMS = 20;
     //speed variable for spawning platforms
     private float m_spawnTime = 2f;
-    //Variable for CameraScroller-script
-    public static CameraScroller cameraSpeed;
     //Variable for DestroyerScript-script
     public static DestroyerScript destroyerScript;
-    public float cameraDestroyerSpeedIncrease;
+    public float DestroyerSpeedIncrease;
     public static bool speedAlreadyIncreased = true;
     //List that holds all the objects, that get spawned so we can access them later to destroy them or get values (count etc).
     public List<GameObject> spawned;
@@ -68,10 +66,6 @@ public class SpawnPlatforms : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //If not set, get the script from the Main Camera GameObject
-        if(!cameraSpeed)
-            cameraSpeed = GameObject.Find("Main Camera").GetComponent<CameraScroller>();
-
         //If not set, get the DestroyerScript from the Destroyer GameObject
         if (destroyerScript == null)
         {
@@ -80,8 +74,8 @@ public class SpawnPlatforms : MonoBehaviour
         }
 
         //If not set, variable starts at 0, increase it by marginal value like 0.2f (Starting value)
-        if(cameraDestroyerSpeedIncrease == 0)
-            cameraDestroyerSpeedIncrease += 0.2f;
+        if(DestroyerSpeedIncrease == 0)
+            DestroyerSpeedIncrease += 0.2f;
 
         randomPlatformNumber = 0;
         platformLocations = getPremadePlatforms();
@@ -128,8 +122,7 @@ public class SpawnPlatforms : MonoBehaviour
                 {
                     if (!speedAlreadyIncreased)
                     {
-                        cameraSpeed.IncreaseSpeedForCamera(cameraDestroyerSpeedIncrease);
-                        destroyerScript.IncreaseSpeedForDestroyer(cameraDestroyerSpeedIncrease);
+                        destroyerScript.IncreaseSpeedForDestroyer(DestroyerSpeedIncrease);
                         boolIncreasedCameraSpeed();
                     }
                 }
