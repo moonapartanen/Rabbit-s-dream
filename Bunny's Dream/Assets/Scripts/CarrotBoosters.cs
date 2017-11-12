@@ -1,20 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CarrotBoosters : MonoBehaviour {
+public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
 
     [HideInInspector] private GameObject shieldParticle = null;
     public static Rigidbody2D playerRb2D;
-    private CharacterControl heroScript;
-    private bool activateJumpBoost = false, shieldActive = false, boostFinished = false;
+    public static bool activateJumpBoost = false, shieldActive = false;
     private void Start()
     {
         if (!playerRb2D)
             playerRb2D = GameObject.Find("hero").GetComponent<Rigidbody2D>();
-
-        if (!heroScript)
-            heroScript = (CharacterControl)GameObject.Find("hero").GetComponent(typeof(CharacterControl));
     }
 
     public class Booster
@@ -59,10 +56,10 @@ public class CarrotBoosters : MonoBehaviour {
     {
         if (activateJumpBoost)
         {
+            Debug.Log("LENNÄ PERKELE");
             playerRb2D.AddForce(new Vector2(0f, 1200f));
             activateJumpBoost = false;
-            heroScript.boostStatus();
-            heroScript.activeBoostName = "";
+            ExecuteEvents.Execute<ICustomMessageSystem>(playerRb2D.gameObject, null, (x, y) => x.BoostRemovedFromHero());
         }
     }
 
@@ -73,26 +70,20 @@ public class CarrotBoosters : MonoBehaviour {
             Debug.Log((System.Int32)(booster.getLength()));
             shieldParticle = (GameObject)Instantiate(Resources.Load("ShieldParticle"), playerRb2D.transform);
             shieldParticle.name = "shieldParticle";
+            shieldParticle.transform.parent = playerRb2D.gameObject.transform;
             Invoke("RemoveShield", (System.Int32)(booster.getLength()));
         }
     }
 
-    public bool boostDone()
-    {
-        return boostFinished;
-    }
-
     private void RemoveShield()
     {
-        Debug.Log("Shield gone now...");
         if (shieldParticle && shieldActive)
         {
             if (shieldParticle != null) {
                 Destroy(shieldParticle);
                 shieldParticle = null;
                 shieldActive = false;
-                heroScript.boostStatus();
-                heroScript.activeBoostName = "";
+                ExecuteEvents.Execute<ICustomMessageSystem>(playerRb2D.gameObject, null, (x, y) => x.BoostRemovedFromHero());
             }
         }
     }
@@ -103,13 +94,23 @@ public class CarrotBoosters : MonoBehaviour {
         switch(booster.getName())
         {
             case "VerticalBoost":
-                activateJumpBoost = !activateJumpBoost;
+                activateJumpBoost = true;
                 break;
             case "Shield":
                 shieldActive = true;
                 ActivateShield(booster);
                 break;
         }
+    }
+
+    public void BoostActivatedOnHero()
+    {
+        Debug.Log("Here for system message");
+    }
+
+    public void BoostRemovedFromHero()
+    {
+        Debug.Log("Wowow?");
     }
 
     public static List<Booster> getBoosters()

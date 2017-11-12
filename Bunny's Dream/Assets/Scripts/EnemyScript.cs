@@ -1,17 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class EnemyScript : MonoBehaviour {
-    private BoxCollider2D mPlatformCollider;
+public class EnemyScript : MonoBehaviour, ICustomMessageSystem {
+    public BoxCollider2D mPlatformCollider;
+    public BoxCollider2D mEnemyBodyCollider;
+    public BoxCollider2D mEnemyKillCollider;
     private Rigidbody2D rb2dEnemy;
     private GameObject parentPlatform;
     public Vector2 endPoint, startPoint;
     public bool EnemyAlive = true, facingRight = false;
+    public static bool playerShieldActive = false;
     private float duration = 4f;
     private float currentLerpTime, startTime, rateToBeChecked;
 	// Use this for initialization
 	IEnumerator Start () {
+        mEnemyBodyCollider = transform.GetComponentInChildren<BoxCollider2D>();
+        mEnemyKillCollider = transform.FindChild("ketunroppa").GetComponent<BoxCollider2D>();
         //Get the collider in the cloud and get the bounds
         mPlatformCollider = this.transform.parent.GetComponent<BoxCollider2D>();
         endPoint = mPlatformCollider.bounds.max;
@@ -67,9 +73,10 @@ public class EnemyScript : MonoBehaviour {
             rb2dEnemy.GetAttachedColliders(collidersInObject);
             foreach(Collider2D collider in collidersInObject)
             {
-                Debug.Log(collider);
                 collider.enabled = false;
             }
+
+            rb2dEnemy.isKinematic = false;
         }
     }
 
@@ -85,5 +92,43 @@ public class EnemyScript : MonoBehaviour {
     {
         rb2dEnemy = enemy.GetComponent<Rigidbody2D>();
         this.EnemyAlive = false;
+    }
+
+    public void KillEnemy(GameObject collision)
+    {
+        EnemyDead(collision.gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.name == "hero")
+        {
+            if (collision.otherCollider.name == "ketunroppa")
+            {
+                if (playerShieldActive)
+                    KillEnemy(collision.otherRigidbody.gameObject);
+                else
+                {
+                    Debug.Log("You died");
+                    Debug.Break();
+                }
+            } else if(collision.otherCollider.name.Contains("Enemy"))
+            {
+                KillEnemy(collision.otherCollider.gameObject);
+            }
+        }
+    }
+
+    public void BoostActivatedOnHero()
+    {
+        playerShieldActive = true;
+        Debug.Log("Hero: Shield activated, turned on shieldActive in enemy");
+        Debug.Log(playerShieldActive);
+    }
+
+    public void BoostRemovedFromHero()
+    {
+        playerShieldActive = false;
+        Debug.Log("Removed shield from hero");
     }
 }

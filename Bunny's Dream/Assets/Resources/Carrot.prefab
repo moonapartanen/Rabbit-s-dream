@@ -36,6 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4471466143526290}
   - component: {fileID: 70439814548144896}
+  - component: {fileID: 114045975275874534}
   m_Layer: 0
   m_Name: Carrot
   m_TagString: Untagged
@@ -83,7 +84,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1215449314480930}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.257711, y: 5.233683, z: 0}
+  m_LocalPosition: {x: -61.203323, y: -1.1062341, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4960939941147020}
@@ -163,6 +164,18 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114045975275874534
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1215449314480930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae20b0fd194ba7b418ecb954070a43a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heroScript: {fileID: 0}
 --- !u!212 &212042477809527042
 SpriteRenderer:
   m_ObjectHideFlags: 1

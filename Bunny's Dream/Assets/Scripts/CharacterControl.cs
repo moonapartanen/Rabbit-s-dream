@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-[RequireComponent (typeof(CarrotBoosters))]
-public class CharacterControl : MonoBehaviour {
+
+public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
 
     [HideInInspector] public bool facingRight = true;
     [HideInInspector] public bool jump = true;
+    [HideInInspector] public bool messageSent = false;
     public List<CarrotBoosters.Booster> boosters;
     public int keyForBooster;
     public bool boostActivated, boostDone;
@@ -16,9 +18,7 @@ public class CharacterControl : MonoBehaviour {
     private float jumpForce = 1000f;
     private Transform groundCheck;
     public CarrotBoosters carrotBoostersScript;
-    private EnemyScript enemyScript;
     private bool grounded = false;
-    public bool enemyBelow;
     private Animator anim;
     private Rigidbody2D rb2d;
     // Use this for initialization
@@ -26,7 +26,8 @@ public class CharacterControl : MonoBehaviour {
     private void Awake()
     {
         if (!carrotBoostersScript) {
-            carrotBoostersScript = (CarrotBoosters)transform.GetComponent(typeof(CarrotBoosters));
+            GameObject carrot = (GameObject)Resources.Load("Carrot");
+            carrotBoostersScript = (CarrotBoosters)carrot.GetComponent<CarrotBoosters>();
         }
         
         if(!groundCheck)
@@ -37,7 +38,6 @@ public class CharacterControl : MonoBehaviour {
 
         boosters = CarrotBoosters.getBoosters();
         boostActivated = false;
-        enemyBelow = false;
         anim = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>();
     }
@@ -93,6 +93,12 @@ public class CharacterControl : MonoBehaviour {
         {
             jump = true;
         }
+        
+        if(activeBoostName == "Shield" && !messageSent)
+        {
+            ExecuteEvents.Execute<ICustomMessageSystem>(GameObject.FindGameObjectWithTag("Enemy"), null, (x, y) => x.BoostActivatedOnHero());
+            messageSent = true;
+        }
     }
 
     //Hahmo käännetään toiseen suuntaan aina käännyttäessä
@@ -104,37 +110,29 @@ public class CharacterControl : MonoBehaviour {
         transform.localScale = theScale;
     }
 
-    public void KillEnemy(Collider2D collision)
-    {
-        enemyScript = collision.gameObject.GetComponent<EnemyScript>();
-        enemyScript.EnemyDead(collision.gameObject);
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.gameObject);
-        if(collision.name.Contains("Carrot"))
+        if (collision.gameObject.name.Contains("Carrot"))
         {
             boostStatus();
             keyForBooster = Random.Range(0, boosters.Count - 1);
             boosters[keyForBooster].setBoostActive();
             activeBoostName = boosters[keyForBooster].getName();
             Destroy(collision.gameObject);
-        } else
-        {
-            if (collision.gameObject.name.Contains("Enemy"))
-            {
-                KillEnemy(collision);
-            }
-            else if (collision.gameObject.name.Equals("ketunroppa") && activeBoostName != "Shield")
-            {
-                Debug.Log("You are DEADDDDDD!!!!!1!!!1111 EATEN BY A FOX!");
-                Debug.Break();
-            }
-            else
-            {
-                KillEnemy(collision);
-            }
         }
+    }
+
+    public void BoostActivatedOnHero()
+    {
+        Debug.Log("Hero: Shield activated by hero");
+    }
+
+    public void BoostRemovedFromHero()
+    {
+        Debug.Log("Shield removed");
+        boostStatus();
+        activeBoostName = "";
+        messageSent = !messageSent;
+        ExecuteEvents.Execute<ICustomMessageSystem>(GameObject.FindGameObjectWithTag("Enemy"), null, (x, y) => x.BoostRemovedFromHero());
     }
 }
