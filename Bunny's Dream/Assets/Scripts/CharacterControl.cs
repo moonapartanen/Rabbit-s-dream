@@ -1,33 +1,43 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-[RequireComponent (typeof(CarrotBoosters))]
-public class CharacterControl : MonoBehaviour {
+
+public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
 
     [HideInInspector] public bool facingRight = true;
     [HideInInspector] public bool jump = true;
+    [HideInInspector] public bool messageSent = false;
     public List<CarrotBoosters.Booster> boosters;
     public int keyForBooster;
-    public bool boostActive;
+    public bool boostActivated, boostDone;
     public string activeBoostName;
-    public float moveForce = 365f;
-    public float maxSpeed = 5f;
-    public float jumpForce = 1000f;
-    public Transform groundCheck;
-
-    private EnemyScript enemyScript;
+    private float moveForce = 365f;
+    private float maxSpeed = 5f;
+    private float jumpForce = 1000f;
+    private Transform groundCheck;
+    public CarrotBoosters carrotBoostersScript;
     private bool grounded = false;
-    public bool enemyBelow;
     private Animator anim;
     private Rigidbody2D rb2d;
     // Use this for initialization
 
     private void Awake()
     {
+        if (!carrotBoostersScript) {
+            GameObject carrot = (GameObject)Resources.Load("Carrot");
+            carrotBoostersScript = (CarrotBoosters)carrot.GetComponent<CarrotBoosters>();
+        }
+        
+        if(!groundCheck)
+        {
+            GameObject groundC = GameObject.Find("groundCheck");
+            groundCheck = (Transform)groundC.transform;
+        }
+
         boosters = CarrotBoosters.getBoosters();
-        boostActive = false;
-        enemyBelow = false;
+        boostActivated = false;
         anim = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>();
     }
@@ -64,21 +74,15 @@ public class CharacterControl : MonoBehaviour {
             jump = false;
         }
 
-        if (activeBoostName == "VerticalBoost" && !boostActive)
+        if (boostActivated)
         {
-            boostStatus();
-            if (boostActive)
-            {
-                rb2d.AddForce(new Vector2(0f, 1200f));
-                activeBoostName = "";
-                boostStatus();
-            }
+            carrotBoostersScript.CheckBoostName(boosters[keyForBooster]);
         }
     }
 
     public void boostStatus()
     {
-        boostActive = !boostActive;
+        boostActivated = !boostActivated;
     }
 
     // Update is called once per frame
@@ -89,7 +93,12 @@ public class CharacterControl : MonoBehaviour {
         {
             jump = true;
         }
-        Debug.Log(enemyBelow);
+        
+        if(activeBoostName == "Shield" && !messageSent)
+        {
+            ExecuteEvents.Execute<ICustomMessageSystem>(GameObject.FindGameObjectWithTag("Enemy"), null, (x, y) => x.BoostActivatedOnHero());
+            messageSent = true;
+        }
     }
 
     //Hahmo käännetään toiseen suuntaan aina käännyttäessä
@@ -103,20 +112,27 @@ public class CharacterControl : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.gameObject);
-        if(collision.name.Contains("Carrot"))
+        if (collision.gameObject.name.Contains("Carrot"))
         {
+            boostStatus();
             keyForBooster = Random.Range(0, boosters.Count - 1);
             boosters[keyForBooster].setBoostActive();
             activeBoostName = boosters[keyForBooster].getName();
             Destroy(collision.gameObject);
         }
+    }
 
-        if (collision.name.Contains("Enemy") && !collision.gameObject.Equals("groundCollider"))
-        {
-            Debug.Log(collision.name);
-            enemyScript = collision.gameObject.GetComponent<EnemyScript>();
-            enemyScript.EnemyDead(collision.gameObject);
-        }
+    public void BoostActivatedOnHero()
+    {
+        Debug.Log("Hero: Shield activated by hero");
+    }
+
+    public void BoostRemovedFromHero()
+    {
+        Debug.Log("Shield removed");
+        boostStatus();
+        activeBoostName = "";
+        messageSent = !messageSent;
+        ExecuteEvents.Execute<ICustomMessageSystem>(GameObject.FindGameObjectWithTag("Enemy"), null, (x, y) => x.BoostRemovedFromHero());
     }
 }

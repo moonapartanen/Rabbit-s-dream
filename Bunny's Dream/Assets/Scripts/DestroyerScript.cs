@@ -57,9 +57,11 @@ public class DestroyerScript : MonoBehaviour {
         speed += increase;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.tag == "Player")
+        Debug.Log(collision.gameObject.name);
+
+        if(collision.gameObject.tag == "Player")
         {
             //Gameover, pausettaa pelin kun pelaaja osuu Destroyeriin
             Debug.Break();
@@ -68,17 +70,17 @@ public class DestroyerScript : MonoBehaviour {
         //missä spawnerID on tason luojan ID ja spawnCounter merkkaa numeroa, joka vastaa tason luontinumeroa.
         //Poistetaan gameobjecti listasta ja tuhotaan se pelistä. 
         //Tämän jälkeen SpawnPlatforms jatkaa tasojen luontia harmaaseen tulevaisuuteen asti, kun listasta vapautuu tilaa (n < 10).
-        if (collision.name.Contains("Spawner 1"))
+        if (collision.gameObject.name.Contains("Spawner 1"))
         {
             firstSpawner.Remove(collision.gameObject);
             Destroy(collision.gameObject);
         }
-        else if(collision.name.Contains("Spawner 2"))
+        else if(collision.gameObject.name.Contains("Spawner 2"))
         {
             secondSpawner.Remove(collision.gameObject);
             Destroy(collision.gameObject);
         }
-        else if(collision.name.Contains("Spawner 3"))
+        else if(collision.gameObject.name.Contains("Spawner 3"))
         {
             thirdSpawner.Remove(collision.gameObject);
             Destroy(collision.gameObject);
@@ -86,7 +88,9 @@ public class DestroyerScript : MonoBehaviour {
         else
         {
             //Destroyeri tuhoaa kaiken muun, mikä osuu siihen. Eli kaikki missä ei ole käytetty GroundSpawneria (Pelaaja, Eka platform, you name it.)
+            Debug.Log(collision.gameObject.name);
             Destroy(collision.gameObject);
+            
         }
     }
 }

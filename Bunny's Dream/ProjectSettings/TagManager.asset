@@ -14,6 +14,7 @@ TagManager:
   - ExplosionFX
   - HealthBar
   - PlatformGenerator
+  - groundCheck
   layers:
   - Default
   - TransparentFX
