@@ -78,13 +78,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\BoosterControl.cs" />
     <Compile Include="Assets\Scripts\CameraScroller.cs" />
     <Compile Include="Assets\Scripts\CarrotBoosters.cs" />
     <Compile Include="Assets\Scripts\CharacterControl.cs" />
-    <Compile Include="Assets\Scripts\CustomMessageSystem.cs" />
     <Compile Include="Assets\Scripts\DestroyerScript.cs" />
     <Compile Include="Assets\Scripts\EnemyScript.cs" />
+    <Compile Include="Assets\Scripts\EventManager\EventManager.cs" />
+    <Compile Include="Assets\Scripts\EventManager\EventTriggers.cs" />
     <Compile Include="Assets\Scripts\ICustomMessageSystem.cs" />
     <Compile Include="Assets\Scripts\SpawnPlatforms.cs" />
   </ItemGroup>

@@ -218,6 +218,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c88bd42ac665f404780085d90b9ebdfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &471807510 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100020, guid: 6aa187bc6339843479c03fdfd71404a3, type: 2}
+  m_PrefabInternal: {fileID: 1525976636}
+--- !u!114 &471807511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 471807510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19d01cd13ea20634795334379f095404, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &706746884
 Prefab:
   m_ObjectHideFlags: 0
@@ -552,6 +567,28 @@ Prefab:
     - {fileID: 114037417162520742, guid: 6aa187bc6339843479c03fdfd71404a3, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 6aa187bc6339843479c03fdfd71404a3, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1630984096 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1557698862733610, guid: 32614ebc89d8f2542a55aa45e70d73f8,
+    type: 2}
+  m_PrefabInternal: {fileID: 2040381645}
+--- !u!95 &1630984097
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1630984096}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a8f1be3f70d7b2b44a024dfae7da285b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1001 &2040381645
 Prefab:
   m_ObjectHideFlags: 0
@@ -591,6 +628,8 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 95595302946646456, guid: 32614ebc89d8f2542a55aa45e70d73f8, type: 2}
+    - {fileID: 111870755893708814, guid: 32614ebc89d8f2542a55aa45e70d73f8, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 32614ebc89d8f2542a55aa45e70d73f8, type: 2}
   m_IsPrefabParent: 0

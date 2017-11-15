@@ -17,9 +17,7 @@ using UnityEngine;
  *  - add the spawned gameobject to spawned(List)
  *
  * List to do:
- * - Increase speed for the camera (Destroyer needs to be faster aswell at this point to keep up with the camera so there will be spawns ahead of the player)
  * - Moving platforms after certain point (Randomized which of the platforms is moving, this can be vertical or horizontal depending on the specific spawn configuration)
- * - Enemies on top of the platforms (Random)
  * 
  * 
  * Made by Eetu Leivo

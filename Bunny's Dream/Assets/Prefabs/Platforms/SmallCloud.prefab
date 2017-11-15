@@ -37,6 +37,7 @@ GameObject:
   - component: {fileID: 4426279759961934}
   - component: {fileID: 61557416373601702}
   - component: {fileID: 251204628589839986}
+  - component: {fileID: 95657523176322640}
   m_Layer: 12
   m_Name: SmallCloud
   m_TagString: ground
@@ -96,6 +97,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6, y: 0.7}
   m_EdgeRadius: 0
+--- !u!95 &95657523176322640
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1459266650418714}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a8f1be3f70d7b2b44a024dfae7da285b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!212 &212027761535298800
 SpriteRenderer:
   m_ObjectHideFlags: 1

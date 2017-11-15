@@ -5,9 +5,21 @@ using UnityEngine.EventSystems;
 
 public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
 
+
+    private void OnEnable()
+    {
+        EventManager.StartListening("CarrotBeingDestroyed", OnDestroy);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListening("CarrotBeingDestroyed", OnDestroy);
+    }
+
     [HideInInspector] private GameObject shieldParticle = null;
     public static Rigidbody2D playerRb2D;
     public static bool activateJumpBoost = false, shieldActive = false;
+
     private void Start()
     {
         if (!playerRb2D)
@@ -111,6 +123,12 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
     public void BoostRemovedFromHero()
     {
         Debug.Log("Wowow?");
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.StopListening("CarrotBeingDestroyed", OnDestroy);
+        Debug.Log("Carrot destroyed!");
     }
 
     public static List<Booster> getBoosters()

@@ -20,6 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4021596283740800}
   - component: {fileID: 212679759726970274}
+  - component: {fileID: 111870755893708814}
+  - component: {fileID: 95595302946646456}
   m_Layer: 12
   m_Name: cloud01
   m_TagString: ground
@@ -96,6 +98,38 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 13.77, y: 0.7}
   m_EdgeRadius: 0
+--- !u!95 &95595302946646456
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1517487509121452}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a8f1be3f70d7b2b44a024dfae7da285b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+--- !u!111 &111870755893708814
+Animation:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1517487509121452}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 08d7ce02324594a4a9dd3dee3b0c9a50, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 08d7ce02324594a4a9dd3dee3b0c9a50, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!212 &212679759726970274
 SpriteRenderer:
   m_ObjectHideFlags: 1
