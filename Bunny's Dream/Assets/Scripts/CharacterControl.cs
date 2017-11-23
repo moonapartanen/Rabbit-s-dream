@@ -21,6 +21,10 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
     private bool grounded = false;
     private Animator anim;
     private Rigidbody2D rb2d;
+
+    public AudioClip jumpSound;
+    public AudioClip shield;
+    private AudioSource source;
     // Use this for initialization
 
     private void Awake()
@@ -36,6 +40,7 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
             groundCheck = (Transform)groundC.transform;
         }
 
+        source = GetComponent<AudioSource>();
         boosters = CarrotBoosters.getBoosters();
         boostActivated = false;
         anim = GetComponent<Animator>();
@@ -70,6 +75,7 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
         if (jump && grounded)
         {
             anim.SetTrigger("Jump");
+            source.PlayOneShot(jumpSound, 0.6f);
             rb2d.AddForce(new Vector2(0f, jumpForce));
             jump = false;
         }
@@ -96,6 +102,7 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
         
         if(activeBoostName == "Shield" && !messageSent)
         {
+            source.PlayOneShot(shield);
             ExecuteEvents.Execute<ICustomMessageSystem>(GameObject.FindGameObjectWithTag("Enemy"), null, (x, y) => x.BoostActivatedOnHero());
             messageSent = true;
         }

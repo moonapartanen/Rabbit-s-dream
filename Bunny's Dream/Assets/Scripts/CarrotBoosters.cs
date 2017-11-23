@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
 
+    private AudioSource source;
+    public AudioClip jumpBooster;
 
     private void OnEnable()
     {
@@ -22,6 +24,7 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
 
     private void Start()
     {
+        source = GetComponent<AudioSource>();
         if (!playerRb2D)
             playerRb2D = GameObject.Find("hero").GetComponent<Rigidbody2D>();
     }
@@ -69,6 +72,7 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
         if (activateJumpBoost)
         {
             Debug.Log("LENNÄ PERKELE");
+            source.PlayOneShot(jumpBooster);
             playerRb2D.AddForce(new Vector2(0f, 1200f));
             activateJumpBoost = false;
             ExecuteEvents.Execute<ICustomMessageSystem>(playerRb2D.gameObject, null, (x, y) => x.BoostRemovedFromHero());
@@ -139,9 +143,6 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
         boosterList.Add(verticalBoost);
 
         Booster shieldBoost = new Booster("Shield", 8f);
-        boosterList.Add(shieldBoost);
-        boosterList.Add(shieldBoost);
-        boosterList.Add(shieldBoost);
         boosterList.Add(shieldBoost);
         return boosterList;
     }

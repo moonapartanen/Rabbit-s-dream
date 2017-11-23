@@ -14,8 +14,12 @@ public class EnemyScript : MonoBehaviour, ICustomMessageSystem {
     public static bool playerShieldActive = false;
     private float duration = 4f;
     private float currentLerpTime, startTime, rateToBeChecked;
+
+    public AudioClip enemyDead;
+    private AudioSource source;
 	// Use this for initialization
 	IEnumerator Start () {
+        source = GetComponent<AudioSource>();
         mEnemyBodyCollider = transform.GetComponentInChildren<BoxCollider2D>();
         mEnemyKillCollider = transform.FindChild("ketunroppa").GetComponent<BoxCollider2D>();
         //Get the collider in the cloud and get the bounds
@@ -92,6 +96,7 @@ public class EnemyScript : MonoBehaviour, ICustomMessageSystem {
     {
         rb2dEnemy = enemy.GetComponent<Rigidbody2D>();
         this.EnemyAlive = false;
+        source.PlayOneShot(enemyDead);
     }
 
     public void KillEnemy(GameObject collision)
