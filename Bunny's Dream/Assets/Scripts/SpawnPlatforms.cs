@@ -61,9 +61,11 @@ public class SpawnPlatforms : MonoBehaviour
     //Counter for spawner
     private static int spawnCounter = 1;
     private static int enemyCounter = 0;
+
     // Use this for initialization
     void Start()
     {
+
         //If not set, get the DestroyerScript from the Destroyer GameObject
         if (destroyerScript == null)
         {

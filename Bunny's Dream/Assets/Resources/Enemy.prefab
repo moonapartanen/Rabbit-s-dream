@@ -160,8 +160,9 @@ MonoBehaviour:
   mEnemyKillCollider: {fileID: 0}
   endPoint: {x: 0, y: 0}
   startPoint: {x: 0, y: 0}
-  EnemyAlive: 1
+  EnemyAlive: 0
   facingRight: 0
+  enemySound: {fileID: 0}
 --- !u!212 &212121179447430484
 SpriteRenderer:
   m_ObjectHideFlags: 1

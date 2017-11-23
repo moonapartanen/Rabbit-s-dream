@@ -21,10 +21,16 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
     private bool grounded = false;
     private Animator anim;
     private Rigidbody2D rb2d;
+
+    public AudioClip jumpSound;
+
+    private AudioSource source;
     // Use this for initialization
 
     private void Awake()
     {
+        source = GetComponent<AudioSource>();
+
         if (!carrotBoostersScript) {
             GameObject carrot = (GameObject)Resources.Load("Carrot");
             carrotBoostersScript = (CarrotBoosters)carrot.GetComponent<CarrotBoosters>();
@@ -69,6 +75,7 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
 
         if (jump && grounded)
         {
+           
             anim.SetTrigger("Jump");
             rb2d.AddForce(new Vector2(0f, jumpForce));
             jump = false;
@@ -91,6 +98,8 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
         grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
         if (Input.GetButtonDown("Jump") && grounded)
         {
+            Debug.Log("Hyppäsin");
+            source.PlayOneShot(jumpSound);
             jump = true;
         }
         
