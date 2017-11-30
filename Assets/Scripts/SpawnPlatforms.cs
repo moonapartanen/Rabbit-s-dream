@@ -2,33 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/* This script is handling groundspawns for the game, there are 3 spawners that are doing the spawning. This is an infinite scroller (Vertical). First spawner does the randomization and all spawners use the same randomPlatformNumber to find 
+/* This script is handling groundspawns for the game, there are 3 spawners that are doing the spawning. This is an infinite 2D Platformer (Vertical). 
+ * First spawner does the randomization and all spawners use the same randomPlatformNumber to find 
  * proper platform heights given in Platforms class that are put on Dictionary declared in function getPremadePlatforms. 
  * The randomPlatformNumber is the key to access these values that are added on top of the highest
  * platform value after each cycle. This is to ensure that each spawn is above each other.
- * EACH CYCLE:
- * - Check that this spawner has less than MAX_PLATFORMS (20) platforms alive, if so cycle continues. 
- * (DestroyerScript handles the Destroyer that terminates all platforms that hit it and removes them from the spawned(List)), making this infinite scroller. 
- * - GET randomPlatformNumber (static) so its always the same with each spawner and only one spawner does the randomization (GroundSpawn 1), 
- * randomization is done for as long as needed to find a value that is != value it was in previous cycle.
- * 
- *  - platformLocations[randomPlatformNumber].platformOneY (GroundSpawn 1) and so on, is the height for GroundSpawn to be added on top of the highest platform value that we get after each cycle to get
- *  proper spacing for the platforms. x-coordinates are staying the same for now, so the groundspawns will never overlap with each other.
- *  - add the spawned gameobject to spawned(List)
- *
- * List to do:
- * - Moving platforms after certain point (Randomized which of the platforms is moving, this can be vertical or horizontal depending on the specific spawn configuration)
- * 
- * 
- * Made by Eetu Leivo
-     */
+*/
 
 public class SpawnPlatforms : MonoBehaviour
 {
 
-    /* Holds premade platform configurations set inside Platforms class that get used to randomize the spawned platforms. This is to ensure that there is always a platform that you can jump on
-     * Difficulty will be based on the speed of the camera (Changing after enough spawns have passed / certain height is reached), moving platforms and enemies. 
-     */
+    // Holds premade platform configurations set inside Platforms class that get used to randomize the spawned platforms. This is to ensure that there is always a platform that you can jump on. 
     public Dictionary<int, Platforms> platformLocations;
     //List for checking if the spawner has spawned in a cycle or not, when this gets to Count 3, 
     //it gets remade and cycle continues, so we can safely update highest-variable 
@@ -46,21 +30,29 @@ public class SpawnPlatforms : MonoBehaviour
     private Vector2 platformLocation;
 
     private static int randomPlatformNumber;
-    private static int spawnsInCycle = -1;
+    //This will be random number between 1-6 cycles
+    private static int numberOfEnemySpawns;
+    //Starting value will be 5, randomized between 4-8
+    private static int enemyRandomization = 5;
+    public static bool spawnEnemies = false;
+    public static int enemyPlatformID = 0;
+    //used to count the cycles we have spawned enemies
+    private static int enemyCounter = 0;
+    //Starting value will be 3, it will be randomized between 3-8 after the first carrot spawn
+    private static int carrotRandomization = 3;
     //max number of platforms alive for each spawner
     private int MAX_PLATFORMS = 20;
     //speed variable for spawning platforms
     private float m_spawnTime = 2f;
     //Variable for DestroyerScript-script
     public static DestroyerScript destroyerScript;
-    public float DestroyerSpeedIncrease;
+    public float destroyerSpeedIncrease;
     public static bool speedAlreadyIncreased = true;
     //List that holds all the objects, that get spawned so we can access them later to destroy them or get values (count etc).
     public List<GameObject> spawned;
 
     //Counter for spawner
     private static int spawnCounter = 1;
-    private static int enemyCounter = 0;
     // Use this for initialization
     void Start()
     {
@@ -72,11 +64,11 @@ public class SpawnPlatforms : MonoBehaviour
         }
 
         //If not set, variable starts at 0, increase it by marginal value like 0.2f (Starting value)
-        if(DestroyerSpeedIncrease == 0)
-            DestroyerSpeedIncrease += 0.2f;
+        if(destroyerSpeedIncrease == 0)
+            destroyerSpeedIncrease += 0.2f;
 
         randomPlatformNumber = 0;
-        platformLocations = getPremadePlatforms();
+        platformLocations = GetPremadePlatforms();
         platformLocation = transform.position;
         if (this.name == "GroundSpawn 1")
         {
@@ -97,19 +89,31 @@ public class SpawnPlatforms : MonoBehaviour
     {
         //Update groundspawner location
         platformLocation = transform.position;
-    }
 
-    private void LateUpdate()
-    {
         //Get the highest platform in previous cycle, check if we need to spawn carrots (Boosts, no functionality yet), Randomize which platform has the carrot. Increase speed for camera & Destroyer
         if (spawnersInCycle.Count == 3)
         {
             spawnCounter++;
 
-            if (spawnCounter % 3 == 0 && !spawnCarrot)
+            if(spawnEnemies)
             {
+                enemyPlatformID = Random.Range(1, 3);
+            }
+
+            //Adds a bit of randomization for the carrot spawns, so its not set in stone when they spawn
+            if (spawnCounter % carrotRandomization == 0 && !spawnCarrot)
+            {
+                carrotRandomization = spawnCounter + RandomizationForCarrots();
                 spawnCarrot = true;
                 carrotSpawnerId = Random.Range(1, 3);
+            }
+
+            //Adds a bit of randomization for the enemy spawns, when they start to spawn
+            if (spawnCounter % enemyRandomization == 0 && !spawnEnemies)
+            {
+                spawnEnemies = true;
+                enemyRandomization = spawnCounter + RandomizationForEnemies();
+                numberOfEnemySpawns = RumberOfEnemiesToSpawn();
             }
 
             if (spawnCounter % 5 == 0)
@@ -120,21 +124,38 @@ public class SpawnPlatforms : MonoBehaviour
                 {
                     if (!speedAlreadyIncreased)
                     {
-                        destroyerScript.IncreaseSpeedForDestroyer(DestroyerSpeedIncrease);
-                        boolIncreasedCameraSpeed();
+                        if (spawnCounter % 15 == 0)
+                            destroyerSpeedIncrease += 0.1f;
+
+                        destroyerScript.IncreaseSpeedForDestroyer(destroyerSpeedIncrease);
+                        boolIncreasedDestroyerSpeed();
                     }
                 }
             }
             spawnersInCycle = new List<int>();
-            highest = highestPlatform();
-            randomPlatformNumber = GameObject.Find("GroundSpawn 1").GetComponent<SpawnPlatforms>().randomNumber();
+            highest = HighestPlatform();
+            randomPlatformNumber = GameObject.Find("GroundSpawn 1").GetComponent<SpawnPlatforms>().RandomNumber();
         }
-
     }
 
-    void boolIncreasedCameraSpeed()
+    void boolIncreasedDestroyerSpeed()
     {
         speedAlreadyIncreased = !speedAlreadyIncreased;
+    }
+
+    public int RumberOfEnemiesToSpawn()
+    {
+        return Random.Range(1, 6);
+    }
+
+    public int RandomizationForCarrots()
+    {
+        return Random.Range(3, 8);
+    }
+
+    public int RandomizationForEnemies()
+    {
+        return Random.Range(4, 8);
     }
 
     void Spawn()
@@ -156,13 +177,20 @@ public class SpawnPlatforms : MonoBehaviour
                     spawnCarrot = false;
                 }
 
-                if(spawnCounter % 4 == 0)
+                if(spawnEnemies && this.spawnerID == enemyPlatformID)
                 {
                     GameObject enemy = (GameObject)Instantiate(Resources.Load("Enemy"), new Vector2(platformLocation.x, platformLocation.y + 3f), Quaternion.identity);
                     enemyCounter++;
                     enemy.name = "Enemy: " + enemyCounter;
                     enemy.transform.parent = newPlatform.transform;
+
+                    if(enemyCounter == numberOfEnemySpawns)
+                    {
+                        spawnEnemies = false;
+                        enemyCounter = 0;
+                    }
                 }
+                
                 spawned.Add(newPlatform);
                 
                 transform.position = PlatformCoords();
@@ -174,18 +202,18 @@ public class SpawnPlatforms : MonoBehaviour
     //This function checks the highest value in the dictionary to get the highest spawner in each cycle.
     //getHighest function is inside Platforms class, that checks which of the values is the highest returns (1-3, 0 if all spawners are on the same y-coordinate)
     //Using the randomPlatformNumber (This happens before a new randomPlatformNumber is set). Returns the value of the highest spawners y-coordinate (float)
-    private float highestPlatform()
+    private float HighestPlatform()
     {
         GameObject spawnerLocation;
-        if (platformLocations[randomPlatformNumber].getHighest() == 1)
+        if (platformLocations[randomPlatformNumber].GetHighest() == 1)
         {
             spawnerLocation = GameObject.Find("GroundSpawn 1").gameObject;
         }
-        else if (platformLocations[randomPlatformNumber].getHighest() == 2)
+        else if (platformLocations[randomPlatformNumber].GetHighest() == 2)
         {
             spawnerLocation = GameObject.Find("GroundSpawn 2").gameObject;
         }
-        else if (platformLocations[randomPlatformNumber].getHighest() == 3)
+        else if (platformLocations[randomPlatformNumber].GetHighest() == 3)
         {
             spawnerLocation = GameObject.Find("GroundSpawn 3").gameObject;
         }
@@ -221,7 +249,7 @@ public class SpawnPlatforms : MonoBehaviour
     }
 
     // This function randoms as long as needed to find another value that was previously in randomPlatformNumber so we get different platform setups each cycle
-    int randomNumber()
+    int RandomNumber()
     {
         int arvottu = 0;
         do
@@ -229,18 +257,6 @@ public class SpawnPlatforms : MonoBehaviour
             arvottu = Random.Range(0, platformLocations.Count - 1);
         } while (arvottu == randomPlatformNumber);
         return arvottu;
-    }
-
-    //Not required for now
-    int getRandomNumber()
-    {
-        return randomPlatformNumber;
-    }
-
-    //Not required for now
-    void setRandomNumber(int number)
-    {
-        randomPlatformNumber = number;
     }
 
     public class Platforms
@@ -258,7 +274,7 @@ public class SpawnPlatforms : MonoBehaviour
             numberOfPremadePlatform = premadeNumber;
         }
         //highest value in instance of this class
-        public int getHighest()
+        public int GetHighest()
         {
             int highest = 0;
             if (platformOneY > platformTwoY && platformOneY > platformThreeY)
@@ -278,7 +294,7 @@ public class SpawnPlatforms : MonoBehaviour
         }
     }
 
-    public Dictionary<int, Platforms> getPremadePlatforms()
+    public Dictionary<int, Platforms> GetPremadePlatforms()
     {
         Dictionary<int, Platforms> premades = new Dictionary<int, Platforms>();
         //Key to access the values (randomPlatformNumber)

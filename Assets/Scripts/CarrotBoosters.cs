@@ -46,22 +46,22 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
             mLength = lasts;
         }
 
-        public void setBoostActive()
+        public void SetBoostActive()
         {
             mBoosterUp = !mBoosterUp;
         }
 
-        public float getLength()
+        public float GetLength()
         {
             return mLength;
         }
 
-        public string getName()
+        public string GetName()
         {
             return mBoosterName;
         }
 
-        public bool status()
+        public bool Status()
         {
             return mBoosterUp;
         }
@@ -83,11 +83,11 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
     {
         if (!shieldParticle && shieldActive)
         {
-            Debug.Log((System.Int32)(booster.getLength()));
+            Debug.Log((System.Int32)(booster.GetLength()));
             shieldParticle = (GameObject)Instantiate(Resources.Load("ShieldParticle"), playerRb2D.transform);
             shieldParticle.name = "shieldParticle";
             shieldParticle.transform.parent = playerRb2D.gameObject.transform;
-            Invoke("RemoveShield", (System.Int32)(booster.getLength()));
+            Invoke("RemoveShield", (System.Int32)(booster.GetLength()));
         }
     }
 
@@ -107,7 +107,7 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
     public void CheckBoostName(Booster booster)
     {
 
-        switch(booster.getName())
+        switch(booster.GetName())
         {
             case "VerticalBoost":
                 activateJumpBoost = true;
@@ -135,7 +135,7 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
         Debug.Log("Carrot destroyed!");
     }
 
-    public static List<Booster> getBoosters()
+    public static List<Booster> GetBoosters()
     {
         List<Booster> boosterList = new List<Booster>();
 
@@ -143,6 +143,10 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
         boosterList.Add(verticalBoost);
 
         Booster shieldBoost = new Booster("Shield", 8f);
+        boosterList.Add(shieldBoost);
+        boosterList.Add(shieldBoost);
+        boosterList.Add(shieldBoost);
+        boosterList.Add(shieldBoost);
         boosterList.Add(shieldBoost);
         return boosterList;
     }

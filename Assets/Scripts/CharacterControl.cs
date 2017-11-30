@@ -41,7 +41,7 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
         }
 
         source = GetComponent<AudioSource>();
-        boosters = CarrotBoosters.getBoosters();
+        boosters = CarrotBoosters.GetBoosters();
         boostActivated = false;
         anim = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>();
@@ -86,7 +86,7 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
         }
     }
 
-    public void boostStatus()
+    public void BoostStatus()
     {
         boostActivated = !boostActivated;
     }
@@ -121,10 +121,10 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
     {
         if (collision.gameObject.name.Contains("Carrot"))
         {
-            boostStatus();
+            BoostStatus();
             keyForBooster = Random.Range(0, boosters.Count - 1);
-            boosters[keyForBooster].setBoostActive();
-            activeBoostName = boosters[keyForBooster].getName();
+            boosters[keyForBooster].SetBoostActive();
+            activeBoostName = boosters[keyForBooster].GetName();
             Destroy(collision.gameObject);
         }
     }
@@ -137,7 +137,7 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
     public void BoostRemovedFromHero()
     {
         Debug.Log("Shield removed");
-        boostStatus();
+        BoostStatus();
         activeBoostName = "";
         messageSent = !messageSent;
         ExecuteEvents.Execute<ICustomMessageSystem>(GameObject.FindGameObjectWithTag("Enemy"), null, (x, y) => x.BoostRemovedFromHero());
