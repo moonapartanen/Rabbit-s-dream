@@ -26,7 +26,7 @@ public class CarrotBoosters : MonoBehaviour, ICustomMessageSystem {
     {
         source = GetComponent<AudioSource>();
         if (!playerRb2D)
-            playerRb2D = GameObject.Find("hero").GetComponent<Rigidbody2D>();
+            playerRb2D = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody2D>();
     }
 
     public class Booster
