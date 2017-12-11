@@ -19,7 +19,7 @@ public class EnemyScript : MonoBehaviour, ICustomMessageSystem {
 	IEnumerator Start () {
         source = GetComponent<AudioSource>();
         enemyBodyCollider = transform.GetComponentInChildren<BoxCollider2D>();
-        enemyKillCollider = transform.FindChild("ketunroppa").GetComponent<BoxCollider2D>();
+        enemyKillCollider = transform.Find("ketunroppa").GetComponent<BoxCollider2D>();
         //Get the collider in the cloud and get the bounds
         platformCollider = transform.parent.GetComponent<BoxCollider2D>();
         endPoint = platformCollider.bounds.max;
