@@ -17,12 +17,13 @@ public class CameraScroller : MonoBehaviour {
     }
 
     private void LateUpdate() {
-        if (player.transform.position.y > highestY) {
-            transform.position = new Vector3(transform.position.x, player.transform.position.y,
-                transform.position.z);
+        if(player != null)
+            if (player.transform.position.y > highestY) {
+                transform.position = new Vector3(transform.position.x, player.transform.position.y,
+                    transform.position.z);
 
-            highestY = player.transform.position.y;
-        }
+                highestY = player.transform.position.y;
+            }
 
         if (transform.position.y - destroyer.transform.position.y < minDistanceToDestroyer)
             transform.position = new Vector3(transform.position.x, destroyer.transform.position.y

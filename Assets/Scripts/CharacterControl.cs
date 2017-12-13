@@ -69,7 +69,7 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
 
         if (jump && grounded) {
             anim.SetTrigger("Jump");
-            source.PlayOneShot(jumpSound, 0.6f);
+            source.PlayOneShot(jumpSound);
             rb2d.AddForce(new Vector2(0f, jumpForce));
             jump = false;
         }
@@ -113,8 +113,8 @@ public class CharacterControl : MonoBehaviour, ICustomMessageSystem {
         if (collision.gameObject.name.Contains("Carrot")) {
             BoostStatus();
             keyForBooster = Random.Range(0, boosters.Count - 1);
-            boosters[keyForBooster].SetBoostActive();
-            activeBoostName = boosters[keyForBooster].GetName();
+            boosters[keyForBooster].Active = true;
+            activeBoostName = boosters[keyForBooster].Name;
             Destroy(collision.gameObject);
         }
     }

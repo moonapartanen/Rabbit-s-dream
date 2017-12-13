@@ -97,10 +97,14 @@ public class EnemyScript : MonoBehaviour, ICustomMessageSystem {
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.collider.tag == "Player") {
             if (collision.otherCollider.name == "ketunroppa") {
-                if (playerShieldActive)
+                if (playerShieldActive) {
                     KillEnemy(collision.otherRigidbody.gameObject);
-                else
-                    Debug.Break();
+                } else {
+                    GameObject player = collision.gameObject;
+                    player.transform.localScale = new Vector3(1.2f, 0.5f, 1.2f);
+                    player.GetComponent<Rigidbody2D>().isKinematic = true;
+                    player.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -10);
+                } 
             } else if (collision.otherCollider.name.Contains("Enemy")) {
                 KillEnemy(collision.otherCollider.gameObject);
             }

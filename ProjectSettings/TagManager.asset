@@ -15,6 +15,7 @@ TagManager:
   - HealthBar
   - PlatformGenerator
   - groundCheck
+  - Score
   layers:
   - Default
   - TransparentFX
